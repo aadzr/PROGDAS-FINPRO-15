@@ -34,6 +34,72 @@ typedef struct {
     int risk_level;
 } Result;
 
+float get_m_intensity(int intensity) {
+    if (intensity == 1) return 1.0;
+    else if (intensity == 2) return 3.0;
+    else if (intensity == 3) return 6.0;
+    else if (intensity == 4) return 9.0;
+    else return 13.0;
+}
+
+float get_m_duration(float pct) {
+    if (pct < 10) return 0.5;
+    else if (pct < 30) return 1.0;
+    else if (pct < 50) return 1.5;
+    else if (pct < 80) return 2.0;
+    else return 3.0;
+}
+
+float get_m_efforts(int efforts) {
+    if (efforts < 50) return 0.5;
+    else if (efforts < 100) return 1.0;
+    else if (efforts < 150) return 1.5;
+    else if (efforts < 200) return 2.0;
+    else return 3.0;
+}
+
+float get_m_posture(PostureType posture) {
+    if (posture == NEUTRAL) return 1.0;
+    else if (posture == NEAR_NEUTRAL) return 1.0;
+    else if (posture == NON_NEUTRAL) return 1.5;
+    else return 2.0;
+}
+
+float get_m_speed(SpeedType speed) {
+    if (speed == SLOW) return 1.0;
+    else if (speed == FAIR) return 1.0;
+    else if (speed == FAST) return 1.5;
+    else return 2.0;
+}
+
+float get_m_hours(float hours) {
+    if (hours <= 1) return 0.25;
+    else if (hours <= 2) return 0.5;
+    else if (hours <= 4) return 0.75;
+    else if (hours <= 8) return 1.0;
+    else return 1.5;
+}
+
+Result hitung_strain_index(TaskData task) {
+    Result result;
+
+    result.m_intensity = get_m_intensity(task.intensity);
+    result.m_duration = get_m_duration(task.duration_pct);
+    result.m_efforts = get_m_efforts(task.efforts);
+    result.m_posture = get_m_posture(task.posture);
+    result.m_hours = get_m_hours(task.hours);
+    result.m_speed = get_m_speed(task.speed);
+
+
+    result.strain_index = result.m_intensity * result.m_duration * result.m_efforts * result.m_posture * result.m_hours * result.m_speed;
+
+    if (result.strain_index < 3.0) result.risk_level = 1;
+    else if (result.strain_index <= 7.0) result.risk_level = 2;
+    else result.risk_level = 3;
+
+    return result;
+}
+
 int main () {
     TaskData task;
     Result   result;
