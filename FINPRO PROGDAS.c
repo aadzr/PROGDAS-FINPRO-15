@@ -100,6 +100,93 @@ Result hitung_strain_index(TaskData task) {
     return result;
 }
 
+void tampilkan_hasil(TaskData task, Result result) {
+
+
+    printf("\n========================================\n");
+    printf("           ASSESSMENT RESULTS\n");
+    printf("========================================\n");
+    printf("Strain Index  : %.2f\n", result.strain_index);
+    printf("Risk Level    : ");
+
+    if      (result.risk_level == 1) printf("SAFE\n");
+    else if (result.risk_level == 2) printf("UNCERTAIN\n");
+    else                             printf("HAZARDOUS\n");
+
+    
+    printf("----------------------------------------\n");
+    printf("MULTIPLIER BREAKDOWN:\n");
+    printf("  Intensity   : x%.2f\n", result.m_intensity);
+    printf("  Duration    : x%.2f\n", result.m_duration);
+    printf("  Efforts     : x%.2f\n", result.m_efforts);
+    printf("  Posture     : x%.2f\n", result.m_posture);
+    printf("  Speed       : x%.2f\n", result.m_speed);
+    printf("  Hours/day   : x%.2f\n", result.m_hours);
+    printf("----------------------------------------\n");
+    printf("Classification (Moore & Garg, 1995):\n");
+    printf("  SI < 3    : Safe\n");
+    printf("  SI 3 - 7  : Uncertain\n");
+    printf("  SI > 7    : Hazardous\n");
+    printf("========================================\n");
+
+    
+    printf("\nRECOMMENDATIONS:\n");
+    printf("----------------------------------------\n");
+
+    if (result.risk_level == 1) {
+        printf("Your habits are currently SAFE.\n");
+        printf("* Keep stretching your fingers every hour\n");
+        printf("* Maintain good wrist posture\n");
+    }
+
+    else if (result.risk_level == 2) {
+        printf("Your risk is MODERATE. Needs attention\n");
+        printf("* Take a 5-minute break every 45 minutes\n");
+        printf("* Consider improving your setup\n");
+    }
+
+    else {
+        printf("Your risk is HIGH. Take action now!\n\n");
+
+        if (task.intensity >= 4) {
+            printf("[Intensity] Reduce work intensity:\n");
+            printf("-> Cut down on high intensity work sessions\n\n");
+        }
+
+        if (task.duration_pct >= 60) {
+            printf("[Duration] Reduce active pressing time:\n");
+            printf("-> Take more pauses during your session\n\n");
+        }
+
+        if (task.efforts >= 150) {
+            printf("[Efforts] Reduce keystroke rate:\n");
+            printf("-> Avoid unnecessary button mashing\n\n");
+        }
+
+        if (task.posture >= NON_NEUTRAL) {
+            printf("[Posture] Fix your wrist position NOW:\n");
+            printf("-> Use keyboard stand or wrist rest\n\n");
+        }
+
+        if (task.speed >= FAST) {
+            printf("[Speed] Slow down your working pace:\n");
+            printf("-> Use Pomodoro: 25 min work, 5 min rest\n\n");
+        }
+
+        if (task.hours >= 6) {
+            printf("[Hours] Reduce your daily playtime:\n");
+            printf("-> From %.1f hours to maximum 4 hours/day\n\n", task.hours);
+        }
+
+        printf("[General] If you experience any symptoms\n");
+        printf("such as pain, numbness, or tingling: ");
+        printf("-> Stop the activity immediately\n");
+        printf("-> Consult an orthopedic doctor\n");
+
+    }
+
+}
+
 int main () {
     TaskData task;
     Result   result;
@@ -289,9 +376,17 @@ int main () {
             scanf("%f", &task.hours);
         } while (task.hours < 0 || task.hours > 16);
 
+        result = hitung_strain_index(task);
+        tampilkan_hasil(task, result);
+
         printf("Calculate again? (y/n): ");
         scanf(" %c", &ulangi);
     } while (ulangi == 'y' || ulangi == 'Y');
+
+    printf("==========================================");
+    printf("\nThank you for using RSI Calculator!\n");
+    printf("Stay healthy!\n");
+    printf("==========================================");
 
     return 0;
 }
